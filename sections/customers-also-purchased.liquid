@@ -1,0 +1,91 @@
+{{ 'also-purchased.js' | asset_url | script_tag }}
+{{ 'also-purchased.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign title = section.settings.title 
+  assign content_type = section.settings.content_type 
+  assign collection = section.settings.collection 
+%}
+
+
+
+<section class="also-purchased container">
+
+  <h1 class="also-purchased__title">{{ title }}</h1>
+  
+  <div class="also-purchased__wrapper">
+    {% if content_type == 'collection' %}
+
+    {% for product in collection.products %}
+      <div class="also-purchased__product">
+        {% render 'custom-product-card', product: product %}
+      </div>
+    {% endfor %}
+  
+  {% else %}
+  
+    {% for block in section.blocks %}
+      {% assign product = block.settings.product %}
+      <div class="also-purchased__product">
+        {% render 'custom-product-card', product: product %}
+      </div>
+    {% endfor %}
+  
+    {% endif %}
+  </div>
+
+</section>
+
+
+{% schema %} 
+{ 
+  "name": "Customers also purchased",
+  "settings": [ 
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Customers also purchased"
+    },
+    {
+      "type": "radio",
+      "id": "content_type",
+      "label": "Content Type",
+      "options": [
+        {
+          "value": "collection",
+          "label": "Collection"
+        },
+        {
+          "value": "products",
+          "label": "Products"
+        }
+      ]
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "products",
+      "name": "Products Block",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }
+      ]
+    }
+  ],"presets": [
+    {
+    
+      "name": "Customers also purchased"
+    }
+  ]
+}
+{% endschema %}

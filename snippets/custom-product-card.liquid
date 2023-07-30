@@ -1,0 +1,99 @@
+{{ 'custom-product-card.css' | asset_url | stylesheet_tag }}
+
+{% comment %}
+  Renders a product card
+
+  Accepts:
+  - product: {Object} Product Liquid object
+  - current_variant: {Object} Variant Liquid object
+
+  Usage:
+  {% render 'custom-product-card', product: product, current_variant: variant %}
+{% endcomment %}
+
+{% unless product == blank %}
+  {% liquid
+    if current_variant != blank
+      assign current_variant = current_variant
+    else
+      assign current_variant = product.selected_or_first_available_variant
+    endif
+
+    assign color_option_name = product.product.options.color | t
+  %}
+
+  <div class="custom-product">
+    <a href="{{ current_variant.url }}" class="custom-product__link">
+        {% assign product_image = product.featured_image %}
+          {% if current_variant.image != blank %}
+            {% assign product_image = current_variant.image %}
+          {% endif %}
+      <img
+        src="{{ product_image | image_url: width: 533 }}"
+        alt="{{ product_image.alt | escape }}"
+        class="motion-reduce custom-product__image"
+        loading="lazy"
+        width="{{ product_image.width }}"
+        height="{{ product_image.height }}"
+      >
+      <span class="custom-product__details">
+        <span class="custom-product__title">{{ product.title }}</span>
+        <span class="custom-product__price">{{ product.price | money }}</span>
+      </span>
+    </a>
+
+    {% if product.metafields.custom.star_rating.value != blank %}
+      {%- comment -%} Get rating number value {%- endcomment -%}
+      {% assign rating = product.metafields.custom.star_rating.value | split: '.' | first | plus: 0 %}
+
+      <div class="custom-product__content">
+        <div class="custom-product__rating">
+          {% for index in (1..5) %}
+            <div class="custom-product__star {% if index <= rating %}filled{% endif %}">
+              {% render 'icon-star', product: product %}
+            </div>
+          {% endfor %}
+          {{ product.metafields.custom.star_rating.value }}     
+        </div>
+  
+        <div  class="custom-product__reviews">
+          {{ product.metafields.custom.reviews.value }}
+        </div>
+
+      </div>
+     
+
+    {% endif %}
+
+    {% if product.variants.size > 1 %}
+
+      {% assign color_option = product.options_with_values | where: 'name', color_option_name | first %}
+      {% if color_option != blank %}
+        <div class="custom-product__swatches">
+          {% assign option_index = 'option' | append: color_option.position %}
+          
+          {% for value in color_option.values %}
+            {%- liquid
+              assign custom_variant = product.variants | where: option_index, value | first
+              
+              assign variant_image = product.featured_image
+              if custom_variant.image != blank
+                assign variant_image = custom_variant.image
+              endif
+            -%}
+
+            <a
+              href="{{ custom_variant.url }}"
+              style="background-color: {{ value }}; color: {{ value }};"
+              data-image-src="{{ variant_image | image_url: width: 533 | escape }}"
+              class="custom-product__swatch {% if custom_variant.id == current_variant.id %}selected{% endif %}"
+            >
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+{% endunless %}
+
+

@@ -1,0 +1,43 @@
+.also-purchased.container {
+  padding: 32px 16px 48px;
+}
+
+@media screen and (min-width: 768px) {
+  .also-purchased.container {
+    padding: 32px;
+  }
+}
+
+.also-purchased__title {
+  color: #171343;
+  font-weight: 600;
+  font-size: 26px;
+  padding-bottom: 11px;
+}
+
+@media screen and (min-width: 768px) {
+  .also-purchased__title {
+    color: #1d1d1d;
+    font-size: 45px;
+  }
+}
+
+.also-purchased__wrapper {
+  display: grid;
+  justify-content: space-around;
+  gap: 24px;
+}
+
+@media screen and (min-width: 768px) {
+  .also-purchased__wrapper {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .also-purchased__wrapper {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
