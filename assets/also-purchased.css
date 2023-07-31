@@ -41,3 +41,10 @@
     gap: 20px;
   }
 }
+
+.also-purchased__product {
+  max-width: 308px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
